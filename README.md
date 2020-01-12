@@ -6,6 +6,12 @@ I have modified the original script and I cant remember the source. Most of the 
 
 These are 2 simple bash script to add additional public trackers to Transmission Daemon.
 
+Public tracker sources    
+https://newtrackon.com/api/stable    
+https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt    
+https://trackerslist.com/all.txt    
+
+
 insert-trackers-single    
 Add all trackers to a SINGLE torrent in queue.
 You will be presented with a list of all torrents in queue and press the number of the torrent
