@@ -1,0 +1,108 @@
+#!/bin/bash
+
+# This script will get the list of active torrents and add public trackers to a single torrent
+
+# Get transmission credentials
+auth=username:password #  <------Change
+host=localhost # <---- This should be fine if script is on transmission computer
+
+add_trackers () {
+
+#--------------------------------------
+# Public Trackers Site 1
+# https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt
+
+torrent_hash=$1
+ for base_url in https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt ; do
+    echo -e "\e[1m"
+    echo "URL for ${base_url}"
+    echo -e "Adding trackers for \033[38;5;92m Tracker Set 1 \e[91m $torrent_name"
+sleep 2
+echo -en "\e[0m"
+    echo -e "\e[2m\e[92m"
+for tracker in $(curl -# "${base_url}") ; do
+    echo -en "\e[0m"
+    echo -ne "\e[93m*\e[0m ${tracker}..."
+if transmission-remote "$host" --auth="$auth" --torrent "${torrent_hash}" -td "${tracker}" | grep -q 'success'; then
+    echo -e '\e[91m failed.'
+    echo -en "\e[0m"
+else
+    echo -e '\e[92m done.'
+    echo -en "\e[0m"
+fi
+ done
+done
+
+#--------------------------------------
+# Public Trackers Site 2
+# https://newtrackon.com/api/stable
+
+torrent_hash=$1
+ for base_url in https://newtrackon.com/api/stable ; do
+    echo -e "\e[1m"
+    echo "URL for ${base_url}"
+    echo -e "Adding trackers for \033[38;5;92m Tracker Set 2 \e[91m $torrent_name"
+sleep 2
+    echo -en "\e[0m"
+    echo -e "\e[2m\e[92m"
+for tracker in $(curl -# "${base_url}") ; do
+    echo -en "\e[0m"
+    echo -ne "\e[93m*\e[0m ${tracker}..."
+if transmission-remote "$host" --auth="$auth" --torrent "${torrent_hash}" -td "${tracker}" | grep -q 'success'; then
+    echo -e '\e[91m failed.'
+    echo -en "\e[0m"
+else
+    echo -e '\e[92m done.'
+    echo -en "\e[0m"
+fi
+ done
+done
+
+#--------------------------------------
+# Public Trackers Site 3
+# https://trackerslist.com/all.txt
+torrent_hash=$1
+ for base_url in https://trackerslist.com/all.txt ; do
+    echo -e "\e[1m"
+    echo "URL for ${base_url}"
+    echo -e "Adding trackers for \033[38;5;92m Tracker Set 3 \e[91m $torrent_name"
+sleep 2
+echo -en "\e[0m"
+    echo -e "\e[2m\e[92m"
+for tracker in $(curl -# "${base_url}") ; do
+    echo -en "\e[0m"
+    echo -ne "\e[93m*\e[0m ${tracker}..."
+if transmission-remote "$host" --auth="$auth" --torrent "${torrent_hash}" -td "${tracker}" | grep -q 'success'; then
+    echo -e '\e[91m failed.'
+    echo -en "\e[0m"
+else
+    echo -e '\e[92m done.'
+    echo -en "\e[0m"
+fi
+ done
+done
+
+
+}
+
+
+# Get list of active torrents
+
+ids="$(transmission-remote "$host" --auth="$auth" --list | grep -vE 'Seeding|Stopped|Finished' | grep '^ ' | awk '{ print $1 }')"
+
+for id in $ids ; do
+torrent_name="$(transmission-remote "$host" --auth="$auth"  --torrent "$id" --info | grep '^  Name: ' |cut -c 9-)"
+
+# Print the ID number and Name of all Torrents in Queue
+
+echo "$(tput sgr0)$(tput setaf 2)" ${id} "$(tput sgr0)$(tput setaf 1)" ${torrent_name}
+done
+
+# Get the ID number of the torrent you want to add the public trackers to
+
+tput sgr0
+echo "Input Number & Press Enter"
+read number
+hash="$(transmission-remote "$host" --auth="$auth"  --torrent "$number" --info | grep '^  Hash: ' | awk '{ print $2 }')"
+torrent_name="$(transmission-remote "$host" --auth="$auth"  --torrent "$number" --info | grep '^  Name: ' |cut -c 9-)"
+add_trackers "$hash"
