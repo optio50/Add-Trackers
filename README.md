@@ -34,4 +34,5 @@ chmod +x insert-trackers
 chmod +x insert-trackers-single    
 
 Run the file manually    
-./insert-trackers-single    
+./insert-trackers-single   
+![](Add-Trackers.gif)
