@@ -1,7 +1,7 @@
 # Add-Trackers
 
 Add Public trackers to Transmission Daemon    
-I have modified the original script and I cant remember the source. Most of the functionality and the single version was added by me.
+I have modified the original script and I cant remember the source. I have added user interface functionality and a single version.
 
 
 These are 2 simple bash script to add additional public trackers to Transmission Daemon.
