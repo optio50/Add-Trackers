@@ -88,7 +88,7 @@ done
 
 # Get list of active torrents
 
-ids="$(transmission-remote "$host" --auth="$auth" --list | grep -vE 'Seeding|Stopped|Finished' | grep '^ ' | awk '{ print $1 }')"
+ids="$(transmission-remote "$host" --auth="$auth" --list | grep -vE 'Seeding|Stopped|Finished' | grep '^ ' | awk '{ print $1 }' | tail -n +2)"
 
 for id in $ids ; do
 torrent_name="$(transmission-remote "$host" --auth="$auth"  --torrent "$id" --info | grep '^  Name: ' |cut -c 9-)"
