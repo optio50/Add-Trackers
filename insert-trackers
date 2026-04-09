@@ -13,7 +13,7 @@ add_trackers () {
  for base_url in https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt ; do
     echo -e "\e[1m"
     echo "URL for ${base_url}"
-    echo -e "Adding trackers for \e[92m $id of $last \033[38;5;92m Tracker Set 1 \e[91m $torrent_name..."
+    echo -e "Adding trackers for \e[92m $count of $last \033[38;5;92m Tracker Set 1 \e[91m $torrent_name..."
 sleep 2
 echo -en "\e[0m"
     echo -e "\e[2m\e[92m"
@@ -39,7 +39,7 @@ torrent_hash=$1
  for base_url in https://newtrackon.com/api/stable ; do
     echo -e "\e[1m"
     echo "URL for ${base_url}"
-    echo -e "Adding trackers for \e[92m $id of $last \033[38;5;92m Tracker Set 2 \e[91m $torrent_name..."
+    echo -e "Adding trackers for \e[92m $count of $last \033[38;5;92m Tracker Set 2 \e[91m $torrent_name..."
 sleep 2
     echo -en "\e[0m"
     echo -e "\e[2m\e[92m"
@@ -66,7 +66,7 @@ torrent_hash=$1
  for base_url in https://trackerslist.com/all.txt ; do
     echo -e "\e[1m"
     echo "URL for ${base_url}"
-    echo -e "Adding trackers for \e[92m $id of $last \033[38;5;92m Tracker Set 3 \e[91m $torrent_name..."
+    echo -e "Adding trackers for \e[92m $count of $last \033[38;5;92m Tracker Set 3 \e[91m $torrent_name..."
 sleep 2
 echo -en "\e[0m"
     echo -e "\e[2m\e[92m"
@@ -91,7 +91,9 @@ done
 ids="$(transmission-remote "$host" --auth="$auth" --list | grep -vE 'Seeding|Stopped|Finished' | grep '^ ' | awk '{ print $1 }' | tail -n +2)"
 last="$(printf "%b\n" $ids | wc -l)"
 
+count=0
 for id in $ids ; do
+    count=$((count + 1))
     hash="$(transmission-remote "$host" --auth="$auth"  --torrent "$id" --info | grep '^  Hash: ' | awk '{ print $2 }')"
     torrent_name="$(transmission-remote "$host" --auth="$auth"  --torrent "$id" --info | grep '^  Name: ' |cut -c 9-)"
     add_trackers "$hash"
