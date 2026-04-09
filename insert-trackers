@@ -20,13 +20,15 @@ echo -en "\e[0m"
 for tracker in $(curl -# "${base_url}") ; do
     echo -en "\e[0m"
     echo -ne "\e[93m*\e[0m ${tracker}..."
-if transmission-remote "$host" --auth="$auth" --torrent "${torrent_hash}" -td "${tracker}" | grep -q 'success'; then
-    echo -e '\e[91m failed.'
+    result=$(transmission-remote "$host" --auth="$auth" --torrent "${torrent_hash}" -td "${tracker}" 2>&1)
+    if echo "$result" | grep -q 'success'; then
+        echo -e '\e[92m done.'
+    elif echo "$result" | grep -q 'error setting announce list'; then
+        echo -e '\e[33m exists.'
+    else
+        echo -e '\e[91m failed.'
+    fi
     echo -en "\e[0m"
-else
-    echo -e '\e[92m done.'
-    echo -en "\e[0m"
-fi
  done
 #sleep 1
 done
@@ -44,13 +46,15 @@ sleep 2
 for tracker in $(curl -# "${base_url}") ; do
     echo -en "\e[0m"
     echo -ne "\e[93m*\e[0m ${tracker}..."
-if transmission-remote "$host" --auth="$auth" --torrent "${torrent_hash}" -td "${tracker}" | grep -q 'success'; then
-    echo -e '\e[91m failed.'
+    result=$(transmission-remote "$host" --auth="$auth" --torrent "${torrent_hash}" -td "${tracker}" 2>&1)
+    if echo "$result" | grep -q 'success'; then
+        echo -e '\e[92m done.'
+    elif echo "$result" | grep -q 'error setting announce list'; then
+        echo -e '\e[33m exists.'
+    else
+        echo -e '\e[91m failed.'
+    fi
     echo -en "\e[0m"
-else
-    echo -e '\e[92m done.'
-    echo -en "\e[0m"
-fi
  done
 #sleep 1
 done
@@ -69,20 +73,22 @@ echo -en "\e[0m"
 for tracker in $(curl -# "${base_url}") ; do
     echo -en "\e[0m"
     echo -ne "\e[93m*\e[0m ${tracker}..."
-if transmission-remote "$host" --auth="$auth" --torrent "${torrent_hash}" -td "${tracker}" | grep -q 'success'; then
-    echo -e '\e[91m failed.'
+    result=$(transmission-remote "$host" --auth="$auth" --torrent "${torrent_hash}" -td "${tracker}" 2>&1)
+    if echo "$result" | grep -q 'success'; then
+        echo -e '\e[92m done.'
+    elif echo "$result" | grep -q 'error setting announce list'; then
+        echo -e '\e[33m exists.'
+    else
+        echo -e '\e[91m failed.'
+    fi
     echo -en "\e[0m"
-else
-    echo -e '\e[92m done.'
-    echo -en "\e[0m"
-fi
  done
 done
 
 }
 
 # Get list of active torrents
-ids="$(transmission-remote "$host" --auth="$auth" --list | grep -vE 'Seeding|Stopped|Finished' | grep '^ ' | awk '{ print $1 }')"
+ids="$(transmission-remote "$host" --auth="$auth" --list | grep -vE 'Seeding|Stopped|Finished' | grep '^ ' | awk '{ print $1 }' | tail -n +2)"
 last="$(printf "%b\n" $ids | wc -l)"
 
 for id in $ids ; do
